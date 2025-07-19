@@ -15,6 +15,9 @@
     "check-types": "turbo check-types",
     "clean": "bash scripts/clean.sh",
     "lint": "biome check .",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "bun run build && changeset publish",
     "dev:web": "turbo -F web dev",
     "dev:auth-server": "turbo -F auth-server dev",
     "dev:api-server": "turbo -F api-server dev",
@@ -26,6 +29,7 @@
   "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "2.1.2",
+    "@changesets/cli": "^2.29.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "turbo": "^2.5.5"

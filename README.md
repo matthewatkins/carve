@@ -17,6 +17,7 @@ A modern TypeScript stack with microservices architecture, combining Nuxt, Elysi
 - **Biome** - Linting and formatting
 - **Husky** - Git hooks for code quality
 - **Turborepo** - Optimized monorepo build system
+- **Changesets** - Versioning and publishing
 
 ## Architecture Overview
 
