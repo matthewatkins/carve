@@ -1,0 +1,38 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "biome.enabled": true,
+  "prettier.enable": false,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+  "editor.insertSpaces": true,
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[css]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[cssmodules]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[tailwindcss]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[postcss]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[json]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[jsonc]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[vue]": { "editor.defaultFormatter": "biomejs.biome" },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "workbench.colorCustomizations": {
+    "sash.hoverBorder": "#0d9488",
+    "statusBar.background": "#2dd4bf",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#0d9488",
+    "statusBarItem.remoteBackground": "#0d9488",
+    "statusBarItem.remoteForeground": "#15202b",
+    "tab.activeBorder": "#0d9488",
+    "titleBar.activeBackground": "#2dd4bf",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#0d9488",
+    "titleBar.inactiveForeground": "#15202b99"
+  }
+}
