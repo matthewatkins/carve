@@ -316,3 +316,9 @@ carve/
 
 - [JWT Token Architecture](./docs/JWT_ARCHITECTURE.md) - Detailed JWT implementation
 - [Architecture Overview](./docs/ARCHITECTURE.md) - Microservices architecture details
+
+## License
+
+This project is free to use, clone, and share for non-commercial purposes.
+You may not sell, modify, or use the source code for commercial projects.
+See [LICENSE.txt](./LICENSE.txt) for details.
