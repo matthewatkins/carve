@@ -81,4 +81,9 @@
     --ui-neutral: var(--color-gray-300);
   }
 
+  html,
+  body,
+  #__nuxt {
+    height: 100%;
+  }
 }

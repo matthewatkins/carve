@@ -10,10 +10,10 @@ const healthCheck = useQuery({
 </script>
 
 <template>
-  <div class="container mx-auto max-w-3xl px-4 py-2">
-    <div class="grid gap-6 mt-4">
-      <section class="flex justify-center p-5">
-        <CarveLogo class="w-100 h-100" />
+  <div class="container mx-auto max-w-3xl px-4 py-2 h-full">
+    <div class="grid grid-rows-[1fr_auto] h-full">
+      <section class="flex justify-center items-center">
+        <CarveLogo class="w-[75svw] max-w-[736px] h-auto" />
       </section>
 
       <section class="border p-4">
