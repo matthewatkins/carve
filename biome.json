@@ -18,7 +18,11 @@
       "!**/routeTree.gen.ts",
       "!**/src-tauri",
       "!**/.nuxt",
-      "!**/.output"
+      "!**/.output",
+      "!**/*.d.ts",
+      "!**/*.d.ts.map",
+      "!**/src/**/*.js",
+      "!**/*.css"
     ]
   },
   "formatter": {

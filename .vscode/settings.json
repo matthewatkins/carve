@@ -22,17 +22,23 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
+  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
   "workbench.colorCustomizations": {
     "sash.hoverBorder": "#0d9488",
-    "statusBar.background": "#2dd4bf",
-    "statusBar.foreground": "#15202b",
-    "statusBarItem.hoverBackground": "#0d9488",
-    "statusBarItem.remoteBackground": "#0d9488",
-    "statusBarItem.remoteForeground": "#15202b",
-    "tab.activeBorder": "#0d9488",
-    "titleBar.activeBackground": "#2dd4bf",
-    "titleBar.activeForeground": "#15202b",
-    "titleBar.inactiveBackground": "#0d9488",
-    "titleBar.inactiveForeground": "#15202b99"
+    "statusBar.background": "#3D423D",
+    "statusBar.foreground": "#E8E8E8",
+    "statusBarItem.hoverBackground": "#3D423D",
+    "statusBarItem.remoteBackground": "#E49C03",
+    "statusBarItem.remoteForeground": "#292929",
+    "statusBarItem.remoteHoverBackground": "#E49C03",
+    "statusBarItem.remoteHoverForeground": "#292929",
+    "tab.activeBorder": "#3D423D",
+    "titleBar.activeBackground": "#3D423D",
+    "titleBar.activeForeground": "#E8E8E8",
+    "titleBar.inactiveBackground": "#3D423D",
+    "titleBar.inactiveForeground": "#E8E8E8"
   }
 }
