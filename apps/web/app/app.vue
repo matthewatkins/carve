@@ -3,11 +3,11 @@ import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 </script>
 
 <template>
-    <NuxtLoadingIndicator />
-    <UApp>
-        <NuxtLayout>
-            <NuxtPage />
-        </NuxtLayout>
-    </UApp>
-    <VueQueryDevtools />
+	<NuxtLoadingIndicator />
+	<UApp>
+		<NuxtLayout>
+			<NuxtPage />
+		</NuxtLayout>
+	</UApp>
+	<VueQueryDevtools />
 </template>

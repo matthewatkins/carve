@@ -39,7 +39,7 @@ const handleSignOut = async () => {
   <div>
     <USkeleton v-if="session.isPending" class="h-9 w-24" />
 
-    <UButton v-else-if="!session.data" variant="outline" to="/login">
+    <UButton v-else-if="!session.data" variant="ghost" to="/login">
       Sign In
     </UButton>
 
