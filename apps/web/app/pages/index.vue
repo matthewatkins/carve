@@ -12,7 +12,10 @@ const healthCheck = useQuery({
 <template>
   <div class="container mx-auto max-w-3xl px-4 py-2">
     <div class="grid gap-6 mt-4">
-      <section class="rounded-lg border p-4">
+      <section class="flex justify-center p-5">
+        <img src="~/assets/images/logo.svg" alt="Logo" class="w-100 h-100" />
+      </section>
+      <section class="border p-4">
         <h2 class="mb-2 font-medium">API Status</h2>
         <div class="flex items-center gap-2">
             <div class="flex items-center gap-2">
@@ -23,8 +26,8 @@ const healthCheck = useQuery({
                   'bg-green-500': healthCheck.status.value === 'success',
                   'bg-red-500': healthCheck.status.value === 'error',
                   'bg-gray-400': healthCheck.status.value !== 'pending' &&
-                                  healthCheck.status.value !== 'success' &&
-                                  healthCheck.status.value !== 'error'
+                    healthCheck.status.value !== 'success' &&
+                    healthCheck.status.value !== 'error'
                 }"
               ></div>
               <span class="text-sm text-muted-foreground">
