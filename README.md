@@ -1,4 +1,4 @@
-# Carve - Microservices Architecture
+# Carve
 
 A modern TypeScript stack with microservices architecture, combining Nuxt, Elysia, ORPC, Better Auth, and more.
 
