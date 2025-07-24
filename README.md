@@ -1,3 +1,5 @@
+** WARNING: Database and Auth are being reworked, they do not currently work on project init **
+
 # Carve
 
 A modern TypeScript stack with microservices architecture, combining Nuxt, Elysia, ORPC, Better Auth, and more.
