@@ -9,8 +9,8 @@ This project has been refactored to use a microservices architecture with separa
 1. **Auth Server** (`apps/auth-server/`)
    - **Port**: 3001
    - **Database**: Auth database (users, sessions, accounts, verifications)
-   - **Responsibilities**: User authentication, session management, JWT token generation
-   - **Endpoints**: `/api/auth/*`, `/api/validate-session`, `/api/validate-jwt`
+   - **Responsibilities**: User authentication, session management, session validation
+- **Endpoints**: `/api/auth/*`, `/api/validate-session`
 
 2. **API Server** (`apps/api-server/`)
    - **Port**: 3002
@@ -25,7 +25,7 @@ This project has been refactored to use a microservices architecture with separa
 ### Shared Packages
 
 - **`packages/shared-types/`**: Common TypeScript interfaces
-- **`packages/shared-utils/`**: Shared utilities (JWT validation, database helpers)
+- **`packages/shared-utils/`**: Shared utilities (session validation, database helpers)
 
 ## Database Separation
 
@@ -64,7 +64,6 @@ This project has been refactored to use a microservices architecture with separa
 AUTH_DATABASE_URL=postgresql://user:pass@localhost:5432/auth_db
 BETTER_AUTH_SECRET=your-secret
 BETTER_AUTH_URL=http://localhost:3001
-JWT_SECRET=your-jwt-secret
 CORS_ORIGIN=http://localhost:3000
 ```
 
@@ -72,7 +71,6 @@ CORS_ORIGIN=http://localhost:3000
 ```env
 API_DATABASE_URL=postgresql://user:pass@localhost:5432/api_db
 AUTH_SERVER_URL=http://localhost:3001
-JWT_SECRET=your-jwt-secret
 CORS_ORIGIN=http://localhost:3000
 ```
 
@@ -113,8 +111,8 @@ The original `apps/server/` can be removed after:
 
 ## Security Considerations
 
-- JWT tokens are shared between services
-- Auth server validates sessions before issuing JWT tokens
-- API server validates JWT tokens with auth server
+- Better Auth sessions are used for service-to-service authentication
+- Auth server validates sessions before allowing API access
+- API server validates sessions with auth server
 - No direct database access between services
 - CORS is configured for each service independently

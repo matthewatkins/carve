@@ -1,5 +1,4 @@
 import type { ApiContext, AuthContext } from "@carve/shared-types";
-import { extractTokenFromHeader, verifyJWT } from "@carve/shared-utils";
 import type { Context as ElysiaContext } from "elysia";
 
 export type CreateContextOptions = {
@@ -9,29 +8,20 @@ export type CreateContextOptions = {
 export async function createContext({
 	context,
 }: CreateContextOptions): Promise<ApiContext> {
-	const authHeader = context.request.headers.get("authorization");
-	const token = extractTokenFromHeader(authHeader || undefined);
-
-	if (!token) {
-		return { auth: null };
-	}
-
-	// Validate JWT token
-	const payload = verifyJWT(token, process.env.JWT_SECRET || "fallback-secret");
-	if (!payload) {
-		return { auth: null };
-	}
-
-	// Call auth-server to validate session
+	// Call auth-server to validate Better Auth session
 	try {
 		const authServerUrl =
 			process.env.AUTH_SERVER_URL || "http://localhost:3001";
-		const response = await fetch(`${authServerUrl}/api/validate-jwt`, {
+
+		const response = await fetch(`${authServerUrl}/api/validate-session`, {
 			method: "POST",
 			headers: {
-				Authorization: `Bearer ${token}`,
 				"Content-Type": "application/json",
 			},
+			// Forward all cookies from the original request
+			body: JSON.stringify({
+				cookies: context.request.headers.get("cookie") || "",
+			}),
 		});
 
 		if (!response.ok) {

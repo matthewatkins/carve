@@ -1,5 +1,18 @@
 # @carve/api
 
+## 0.6.0
+
+### Minor Changes
+
+- 6c4a0d1: - Updated initialization script to fix database creation
+  - Removed JWT authentication flow in favor of Better Auth sessions
+
+### Patch Changes
+
+- Updated dependencies [6c4a0d1]
+  - @carve/shared-types@0.6.0
+  - @carve/shared-utils@0.6.0
+
 ## 0.5.1
 
 ### Patch Changes

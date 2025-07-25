@@ -9,24 +9,15 @@ export type ApiClient = RouterClient<typeof appRouter>;
 
 export interface ApiClientConfig {
 	baseURL: string;
-	getAuthToken?: () => string | null;
 }
 
 export function createApiClient(config: ApiClientConfig): ApiClient {
-	const { baseURL, getAuthToken } = config;
+	const { baseURL } = config;
 
 	const rpcLink = new RPCLink({
 		url: `${baseURL}/rpc`,
 		fetch: (request: Request, init: RequestInit) => {
 			const headers = new Headers(init?.headers || {});
-
-			// Add auth token if available
-			if (getAuthToken) {
-				const token = getAuthToken();
-				if (token) {
-					headers.set("Authorization", `Bearer ${token}`);
-				}
-			}
 
 			return fetch(request, {
 				...init,

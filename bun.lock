@@ -76,7 +76,7 @@
     },
     "packages/api": {
       "name": "@carve/api",
-      "version": "1.0.0",
+      "version": "0.5.1",
       "dependencies": {
         "@carve/shared-types": "workspace:*",
         "@carve/shared-utils": "workspace:*",
@@ -88,14 +88,14 @@
     },
     "packages/shared-types": {
       "name": "@carve/shared-types",
-      "version": "1.0.0",
+      "version": "0.5.1",
       "devDependencies": {
         "typescript": "^5.8.2",
       },
     },
     "packages/shared-utils": {
       "name": "@carve/shared-utils",
-      "version": "1.0.0",
+      "version": "0.5.1",
       "dependencies": {
         "@carve/shared-types": "workspace:*",
       },

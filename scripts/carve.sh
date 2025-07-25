@@ -220,6 +220,13 @@ initialize_project() {
         fi
     done
 
+    # Update turbo filter commands in root package.json
+    print_status "Updating turbo filter commands..."
+    if [[ -f "package.json" ]]; then
+        replace_in_file "package.json" "turbo -F @$old_name/" "turbo -F @$new_name/"
+        print_success "Updated turbo filter commands"
+    fi
+
     # Update import statements in TypeScript/JavaScript files
     print_status "Updating import statements..."
     local import_patterns=(
@@ -295,9 +302,71 @@ initialize_project() {
                 if docker-compose up --build -d; then
                     print_success "Database started successfully!"
 
+                    # Wait for database to be ready and create databases
+                    print_status "Waiting for database to be ready..."
+                    sleep 10
+
+                    # Check if databases exist, if not create them
+                    if ! docker exec ${new_name}-postgres psql -U postgres -lqt | cut -d \| -f 1 | grep -qw auth_db; then
+                        print_status "Creating databases..."
+                        docker exec ${new_name}-postgres psql -U postgres -c "CREATE DATABASE auth_db;"
+                        docker exec ${new_name}-postgres psql -U postgres -c "CREATE DATABASE api_db;"
+                        print_success "Databases created successfully!"
+                    fi
+
                     # Wait a moment for database to be ready
                     print_status "Waiting for database to be ready..."
                     sleep 3
+
+                                        # Create .env files for database connections
+                    print_status "Creating .env files for database connections..."
+
+                    # Copy example.env to .env for auth-server
+                    if [[ -f "apps/auth-server/example.env" && ! -f "apps/auth-server/.env" ]]; then
+                        cp "apps/auth-server/example.env" "apps/auth-server/.env"
+                        print_success "Created apps/auth-server/.env from example.env"
+                    elif [[ ! -f "apps/auth-server/.env" ]]; then
+                        print_warning "No example.env found for auth-server, creating basic .env"
+                        cat > "apps/auth-server/.env" << EOF
+# Database Configuration
+AUTH_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth_db
+
+# Server Configuration
+PORT=3001
+HOST=0.0.0.0
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
+
+# Better Auth Configuration
+BETTER_AUTH_SECRET=your-super-secret-better-auth-key-change-this-in-production
+BETTER_AUTH_URL=http://localhost:3001
+EOF
+                        print_success "Created apps/auth-server/.env"
+                    fi
+
+                    # Copy example.env to .env for api-server
+                    if [[ -f "apps/api-server/example.env" && ! -f "apps/api-server/.env" ]]; then
+                        cp "apps/api-server/example.env" "apps/api-server/.env"
+                        print_success "Created apps/api-server/.env from example.env"
+                    elif [[ ! -f "apps/api-server/.env" ]]; then
+                        print_warning "No example.env found for api-server, creating basic .env"
+                        cat > "apps/api-server/.env" << EOF
+# Database Configuration
+API_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/api_db
+
+# Server Configuration
+PORT=3002
+HOST=0.0.0.0
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
+
+# Auth Server URL
+AUTH_SERVER_URL=http://localhost:3001
+EOF
+                        print_success "Created apps/api-server/.env"
+                    fi
 
                     # Push schemas
                     print_status "Setting up database schemas..."
@@ -353,15 +422,65 @@ initialize_project() {
             print_error "Failed to install dependencies"
             exit 1
         fi
-    else
-        print_header "📋 Next Steps"
-        echo "1. Run 'bun install' to install dependencies"
-        echo "2. Set up your environment variables (see README.md)"
-        echo "3. Start database: docker-compose up --build -d"
-        echo "4. Push database schemas: bun run db:push:auth && bun run db:push:api"
-        echo "5. Start development: bun dev"
-        echo "6. Update any remaining references manually if needed"
-        echo "7. Backup available in $backup_dir if needed"
+            else
+                        # Create .env files even if not setting up database
+            print_status "Creating .env files for database connections..."
+
+            # Copy example.env to .env for auth-server
+            if [[ -f "apps/auth-server/example.env" && ! -f "apps/auth-server/.env" ]]; then
+                cp "apps/auth-server/example.env" "apps/auth-server/.env"
+                print_success "Created apps/auth-server/.env from example.env"
+            elif [[ ! -f "apps/auth-server/.env" ]]; then
+                print_warning "No example.env found for auth-server, creating basic .env"
+                cat > "apps/auth-server/.env" << EOF
+# Database Configuration
+AUTH_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth_db
+
+# Server Configuration
+PORT=3001
+HOST=0.0.0.0
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
+
+# Better Auth Configuration
+BETTER_AUTH_SECRET=your-super-secret-better-auth-key-change-this-in-production
+BETTER_AUTH_URL=http://localhost:3001
+EOF
+                print_success "Created apps/auth-server/.env"
+            fi
+
+            # Copy example.env to .env for api-server
+            if [[ -f "apps/api-server/example.env" && ! -f "apps/api-server/.env" ]]; then
+                cp "apps/api-server/example.env" "apps/api-server/.env"
+                print_success "Created apps/api-server/.env from example.env"
+            elif [[ ! -f "apps/api-server/.env" ]]; then
+                print_warning "No example.env found for api-server, creating basic .env"
+                cat > "apps/api-server/.env" << EOF
+# Database Configuration
+API_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/api_db
+
+# Server Configuration
+PORT=3002
+HOST=0.0.0.0
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
+
+# Auth Server URL
+AUTH_SERVER_URL=http://localhost:3001
+EOF
+                print_success "Created apps/api-server/.env"
+            fi
+
+            print_header "📋 Next Steps"
+            echo "1. Run 'bun install' to install dependencies"
+            echo "2. Set up your environment variables (see README.md)"
+            echo "3. Start database: docker-compose up --build -d"
+            echo "4. Push database schemas: bun run db:push:auth && bun run db:push:api"
+            echo "5. Start development: bun dev"
+            echo "6. Update any remaining references manually if needed"
+            echo "7. Backup available in $backup_dir if needed"
 
         # Ask about backup cleanup
         local cleanup_confirm=$(ask_question "Would you like to delete the backup directory? ($backup_dir) (y/N)" "n")
