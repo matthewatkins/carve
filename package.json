@@ -18,13 +18,13 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "bun run build && changeset publish",
-    "dev:web": "turbo -F web dev",
-    "dev:auth-server": "turbo -F auth-server dev",
-    "dev:api-server": "turbo -F api-server dev",
-    "db:push:auth": "turbo -F auth-server db:push",
-    "db:studio:auth": "turbo -F auth-server db:studio",
-    "db:push:api": "turbo -F api-server db:push",
-    "db:studio:api": "turbo -F api-server db:studio"
+    "dev:web": "turbo -F @carve/web dev",
+    "dev:auth-server": "turbo -F @carve/auth-server dev",
+    "dev:api-server": "turbo -F @carve/api-server dev",
+    "db:push:auth": "turbo -F @carve/auth-server db:push",
+    "db:studio:auth": "turbo -F @carve/auth-server db:studio",
+    "db:push:api": "turbo -F @carve/api-server db:push",
+    "db:studio:api": "turbo -F @carve/api-server db:studio"
   },
   "dependencies": {},
   "devDependencies": {
