@@ -7,10 +7,6 @@ export default defineNuxtPlugin(() => {
 
 	const apiClient = createApiClient({
 		baseURL: apiServerUrl,
-		getAuthToken: () => {
-			// Get token from localStorage, cookies, or auth client
-			return localStorage.getItem("auth-token") || null;
-		},
 	});
 
 	return {

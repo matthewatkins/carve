@@ -15,7 +15,7 @@ A modern TypeScript stack with microservices architecture, combining Nuxt, Elysi
 - **Drizzle** - TypeScript-first ORM
 - **PostgreSQL** - Database engine
 - **Authentication** - Email & password authentication with Better Auth
-- **JWT Tokens** - Service-to-service authentication
+- **Better Auth Sessions** - Service-to-service authentication
 - **Biome** - Linting and formatting
 - **Husky** - Git hooks for code quality
 - **Turborepo** - Optimized monorepo build system
@@ -36,19 +36,19 @@ This project uses a microservices architecture with three main services:
    - Handles all authentication and authorization
    - Database: Auth-specific schema (users, sessions, accounts)
    - Endpoints: `/api/auth/**` (login, register, session management)
-   - Generates JWT tokens for API server communication
+   - Validates Better Auth sessions for API server communication
 
 3. **API Server** (`apps/api-server/`) - Port 3002
    - Handles all application logic and business data
    - Database: Application-specific schema
    - Endpoints: `/rpc/**` (all application endpoints)
-   - Validates JWT tokens from auth server
+   - Validates Better Auth sessions from auth server
 
 ### Shared Packages
 
 - **`packages/api/`** - Shared oRPC router definitions and type-safe API procedures
 - **`packages/shared-types/`** - Common TypeScript interfaces
-- **`packages/shared-utils/`** - Shared utilities (JWT validation, database helpers)
+- **`packages/shared-utils/`** - Shared utilities (session validation, database helpers)
 
 ## Quick Start
 
@@ -89,7 +89,6 @@ docker-compose up --build -d
 AUTH_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/auth_db"
 BETTER_AUTH_SECRET="your-secret"
 BETTER_AUTH_URL="http://localhost:3001"
-JWT_SECRET="your-jwt-secret"
 CORS_ORIGIN="http://localhost:3000"
 ```
 
@@ -97,7 +96,6 @@ CORS_ORIGIN="http://localhost:3000"
 ```env
 API_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/api_db"
 AUTH_SERVER_URL="http://localhost:3001"
-JWT_SECRET="your-jwt-secret"
 CORS_ORIGIN="http://localhost:3000"
 ```
 
@@ -189,25 +187,25 @@ bun run db:studio:auth
 bun run db:studio:api
 ```
 
-## JWT Token Architecture
+## Better Auth Session Architecture
 
-This project uses JWT tokens for service-to-service authentication between the auth-server and api-server.
+This project uses Better Auth sessions for service-to-service authentication between the auth-server and api-server.
 
 ### Authentication Flow
 
 1. **User Authentication**: Web app authenticates with auth server using Better Auth
-2. **JWT Generation**: Auth server creates JWT tokens for API server communication
-3. **API Access**: Web app uses JWT tokens to access protected API endpoints
-4. **Token Validation**: API server validates JWT tokens with auth server
+2. **Session Validation**: API server validates Better Auth sessions with auth server
+3. **API Access**: Web app uses session cookies to access protected API endpoints
+4. **Session Verification**: API server verifies sessions with auth server
 
 ### Security Benefits
 
 - **No Shared Database**: API server doesn't need direct access to auth database
-- **Session Validation**: JWT tokens are tied to specific sessions
-- **Cryptographic Verification**: API server can verify JWT signatures locally
+- **Session Management**: Better Auth handles session lifecycle and security
+- **Cookie-based Security**: Sessions are managed securely through HTTP cookies
 - **Microservices Security**: Proper separation between auth and business logic
 
-For detailed information, see [JWT_ARCHITECTURE.md](./docs/JWT_ARCHITECTURE.md).
+For detailed information, see [ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 ## Development Workflow
 
@@ -249,7 +247,7 @@ For detailed information, see [JWT_ARCHITECTURE.md](./docs/JWT_ARCHITECTURE.md).
 #### Database Connection Issues
 - Check that PostgreSQL is running: `docker ps`
 - Verify database URLs in environment variables
-- Check database logs: `docker logs carve-postgres`
+- Check database logs: `docker logs carve-2-postgres`
 
 #### CORS Issues
 - Check that `CORS_ORIGIN` is set correctly
@@ -288,12 +286,12 @@ ports:
 4. **Flexibility**: Easy to add new services or frontends
 5. **Type Safety**: Shared packages ensure consistency
 6. **Database Isolation**: Auth and app data are separate
-7. **JWT Authentication**: Secure service-to-service communication
+7. **Better Auth Sessions**: Secure service-to-service communication
 
 ## Project Structure
 
 ```
-carve/
+carve-2/
 ├── apps/
 │   ├── web/              # Frontend application (Nuxt)
 │   ├── auth-server/      # Authentication service (Hono + Better Auth)
@@ -303,7 +301,7 @@ carve/
 │   ├── shared-types/     # Common TypeScript interfaces
 │   └── shared-utils/     # Shared utilities
 ├── docs/
-│   ├── JWT_ARCHITECTURE.md   # JWT token system documentation
+│   ├── ARCHITECTURE.md        # System architecture documentation
 │   └── ARCHITECTURE.md   # Architecture overview
 ```
 
@@ -317,7 +315,7 @@ carve/
 
 ## Documentation
 
-- [JWT Token Architecture](./docs/JWT_ARCHITECTURE.md) - Detailed JWT implementation
+- [System Architecture](./docs/ARCHITECTURE.md) - Detailed architecture implementation
 - [Architecture Overview](./docs/ARCHITECTURE.md) - Microservices architecture details
 
 ## License

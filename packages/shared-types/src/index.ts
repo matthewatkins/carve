@@ -31,14 +31,6 @@ export interface ApiContext {
 	auth: AuthContext | null;
 }
 
-// JWT token payload structure
-export interface JWTPayload {
-	userId: string;
-	sessionId: string;
-	exp: number;
-	iat: number;
-}
-
 // Common error types
 export interface ApiError {
 	code: string;
