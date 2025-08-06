@@ -1,3 +1,5 @@
+# .github/workflows/release.yml
+
 name: Release
 
 on:
@@ -11,7 +13,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  changeset:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,6 +36,7 @@ jobs:
         run: bun run build
         working-directory: packages/create-carve
 
+      # Write .npmrc to both root and package dir for Bun publish auth
       - name: Write .npmrc to root
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         env:
@@ -44,13 +47,18 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
+      # Run changesets to create version PRs (does not publish)
+      - name: Create Release Pull Request
         uses: changesets/action@v1
         with:
-          publish: |
-            cd packages/create-carve
-            bun publish --access public --tag alpha
+          title: "chore: version packages"
+          commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish CLI package (always runs, but will only publish if there are unpublished changes)
+      - name: Publish CLI package
+        run: bun publish --access public --tag alpha
+        working-directory: packages/create-carve
+        env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
