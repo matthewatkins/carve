@@ -88,7 +88,7 @@ export const create = defineCommand({
 			} else {
 				// For production, download from GitHub
 				await downloadTemplate(
-					"https://github.com/matthewatkins/carve-template",
+					"https://github.com/matthewatkins/carve-template.git",
 					{
 						dir: targetDir,
 						force: true,
