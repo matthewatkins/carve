@@ -1,9 +1,9 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
-import { intro, outro, text, confirm, spinner, note } from "@clack/prompts";
-import { execa } from "execa";
 import { consola } from "consola";
-import { join } from "path";
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
+import { execa } from "execa";
 import { glob } from "glob";
 
 export const init = defineCommand({
@@ -326,7 +326,7 @@ export const init = defineCommand({
 								{ stdio: "pipe" },
 							);
 							s.stop("Databases created successfully");
-						} catch (error) {
+						} catch (_error) {
 							// Databases might already exist, which is fine
 							s.stop("Databases already exist");
 						}
@@ -354,14 +354,14 @@ Service URLs:
                `,
 								"Setup Complete",
 							);
-						} catch (error) {
+						} catch (_error) {
 							s.stop("Failed to set up database schemas");
 							consola.warn("You may need to check your environment variables");
 							consola.info(
 								"You can try manually: bun run db:push:auth && bun run db:push:api",
 							);
 						}
-					} catch (error) {
+					} catch (_error) {
 						s.stop("Failed to start database");
 						consola.warn(
 							"You may need to install Docker or check your Docker setup",
@@ -435,7 +435,7 @@ AUTH_SERVER_URL=http://localhost:3001`;
 				}
 
 				s.stop("Environment files created successfully");
-			} catch (error) {
+			} catch (_error) {
 				s.stop("Failed to create environment files");
 				consola.warn("You may need to create .env files manually");
 			}

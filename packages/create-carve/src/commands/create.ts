@@ -1,10 +1,16 @@
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
+import { join } from "node:path";
+import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
-import { intro, outro, text, confirm, spinner, note } from "@clack/prompts";
-import { downloadTemplate } from "giget";
-import { execa } from "execa";
 import { consola } from "consola";
-import { join } from "path";
-import { existsSync, rmSync, mkdirSync, writeFileSync, readFileSync } from "fs";
+import { execa } from "execa";
+import { downloadTemplate } from "giget";
 import { glob } from "glob";
 
 export const create = defineCommand({
@@ -251,7 +257,7 @@ export const create = defineCommand({
 			}
 
 			s.stop("Project references updated successfully");
-		} catch (error) {
+		} catch (_error) {
 			s.stop("Failed to update project references");
 			consola.warn("You may need to update references manually");
 		}
@@ -334,7 +340,7 @@ AUTH_SERVER_URL=http://localhost:3001`;
 			consola.success("Created apps/api-server/.env");
 
 			s.stop("Environment files created successfully");
-		} catch (error) {
+		} catch (_error) {
 			s.stop("Failed to create environment files");
 			consola.warn("You may need to create .env files manually");
 		}
@@ -387,7 +393,7 @@ AUTH_SERVER_URL=http://localhost:3001`;
 						{ stdio: "pipe" },
 					);
 					s.stop("Databases created successfully");
-				} catch (error) {
+				} catch (_error) {
 					// Databases might already exist, which is fine
 					s.stop("Databases already exist");
 				}
@@ -410,11 +416,11 @@ AUTH_SERVER_URL=http://localhost:3001`;
 						await execa("npm", ["run", "db:push:api"], { stdio: "inherit" });
 					}
 					s.stop("Database schemas set up successfully");
-				} catch (error) {
+				} catch (_error) {
 					s.stop("Failed to set up database schemas");
 					consola.warn("You may need to check your environment variables");
 				}
-			} catch (error) {
+			} catch (_error) {
 				s.stop("Failed to start database");
 				consola.warn(
 					"You may need to install Docker or check your Docker setup",
@@ -440,7 +446,7 @@ AUTH_SERVER_URL=http://localhost:3001`;
 					stdio: "inherit",
 				});
 				s.stop("Git repository initialized successfully");
-			} catch (error) {
+			} catch (_error) {
 				s.stop("Failed to initialize git repository");
 				consola.warn(
 					"You can initialize git manually: git init && git add . && git commit -m 'Initial commit'",
