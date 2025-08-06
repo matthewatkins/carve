@@ -22,7 +22,8 @@
       "!**/*.d.ts",
       "!**/*.d.ts.map",
       "!**/src/**/*.js",
-      "!**/*.css"
+      "!**/*.css",
+      "!packages/carve-template/**"
     ]
   },
   "formatter": {
