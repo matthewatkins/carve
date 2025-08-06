@@ -19,7 +19,8 @@
     "release": "bun run build && changeset publish --tag alpha",
     "create-carve": "bun packages/create-carve/dist/index.js",
     "carve:create": "bun packages/create-carve/dist/index.js create",
-    "carve:init": "bun packages/create-carve/dist/index.js init"
+    "carve:init": "bun packages/create-carve/dist/index.js init",
+    "publish:create-carve": "cd packages/create-carve && bun publish --access public --tag alpha --scope @matthew.atkins"
   },
   "dependencies": {},
   "devDependencies": {

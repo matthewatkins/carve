@@ -31,17 +31,14 @@ jobs:
         run: bun run lint
 
       - name: Build CLI
-        run: |
-          cd packages/create-carve
-          bun run build
+        run: bun run build
+        working-directory: packages/create-carve
 
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: |
-            cd packages/create-carve
-            bun publish --access public --tag alpha --scope @matthew.atkins
+          publish: bun run publish:create-carve
           title: "chore: version packages"
           commit: "chore: version packages"
         env:
