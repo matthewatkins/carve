@@ -34,6 +34,12 @@ jobs:
         run: bun run build
         working-directory: packages/create-carve
 
+      - name: Write .npmrc for publish
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > packages/create-carve/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
@@ -44,4 +50,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
