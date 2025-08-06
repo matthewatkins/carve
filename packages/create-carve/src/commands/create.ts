@@ -79,19 +79,16 @@ export const create = defineCommand({
 			// Detect if we're in development mode by checking if we're running from the monorepo
 			const isDevelopment =
 				process.env.NODE_ENV === "development" ||
-				process.env.CARVE_DEV === "true" ||
-				process.cwd().includes("carve@v1") ||
-				__dirname.includes("carve@v1");
+				process.env.CARVE_DEV === "true";
 
 			if (isDevelopment) {
 				// For development, copy the template directory directly
-				const templateDir =
-					"/Users/atkins/code/projects/carve@v1/packages/carve-template";
+				const templateDir = "/Users/atkins/code/projects/carve-template";
 				await execa("cp", ["-r", templateDir, targetDir]);
 			} else {
 				// For production, download from GitHub
 				await downloadTemplate(
-					"https://github.com/matthewatkins/carve/tree/main/packages/carve-template",
+					"https://github.com/matthewatkins/carve-template",
 					{
 						dir: targetDir,
 						force: true,
