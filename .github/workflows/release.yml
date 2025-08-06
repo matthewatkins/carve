@@ -58,7 +58,7 @@ jobs:
 
       # Publish CLI package (always runs, but will only publish if there are unpublished changes)
       - name: Publish CLI package
-        run: bun publish --access public --tag alpha
+        run: bun publish --access public
         working-directory: packages/create-carve
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
