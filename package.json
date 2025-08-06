@@ -1,0 +1,38 @@
+{
+  "name": "carve",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "check": "biome check --write .",
+    "check:write": "biome check --write --unsafe",
+    "prepare": "husky",
+    "dev": "bash scripts/predev.sh && turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "clean": "bash scripts/clean.sh",
+    "lint": "biome check .",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "bun run build && changeset publish --tag alpha",
+    "create-carve": "bun packages/create-carve/dist/index.js",
+    "carve:create": "bun packages/create-carve/dist/index.js create",
+    "carve:init": "bun packages/create-carve/dist/index.js init"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "2.1.2",
+    "@changesets/cli": "^2.29.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "turbo": "^2.5.5"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write ."
+    ]
+  },
+  "packageManager": "bun@1.2.15"
+}
