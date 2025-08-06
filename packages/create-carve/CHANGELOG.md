@@ -1,5 +1,11 @@
 # @matthew.atkins/create-carve
 
+## 0.1.1
+
+### Patch Changes
+
+- Fixes the NPM publishing of the create-carve package
+
 ## 0.1.0
 
 ### Minor Changes
