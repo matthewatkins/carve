@@ -27,16 +27,23 @@ jobs:
         run: bun run lint
 
       - name: Build CLI
-        run: |
-          cd packages/create-carve
-          bun run build
+        run: bun run build
+        working-directory: packages/create-carve
+
+      - name: Write .npmrc to root
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Write .npmrc to package
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > packages/create-carve/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish CLI package
-        run: |
-          cd packages/create-carve
-          bun publish --access public --scope @matthew.atkins
+        run: bun publish --access public --tag alpha
+        working-directory: packages/create-carve
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
