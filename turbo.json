@@ -2,20 +2,17 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalDependencies": ["**/.env*"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"],
-      "filter": "!packages/carve-template/**"
+      "outputs": ["dist/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"],
-      "filter": "!packages/carve-template/**"
+      "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"],
-      "filter": "!packages/carve-template/**"
+      "dependsOn": ["^check-types"]
     },
     "dev": {
       "cache": false,
