@@ -87,13 +87,10 @@ export const create = defineCommand({
 				await execa("cp", ["-r", templateDir, targetDir]);
 			} else {
 				// For production, download from GitHub
-				await downloadTemplate(
-					"https://github.com/matthewatkins/carve-template.git",
-					{
-						dir: targetDir,
-						force: true,
-					},
-				);
+				await downloadTemplate("gh:matthewatkins/carve-template", {
+					dir: targetDir,
+					force: true,
+				});
 			}
 			s.stop("Template downloaded successfully");
 		} catch (error) {
