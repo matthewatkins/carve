@@ -47,15 +47,6 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Run changesets to create version PRs (does not publish)
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
-        with:
-          title: "chore: version packages"
-          commit: "chore: version packages"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Publish CLI package (always runs, but will only publish if there are unpublished changes)
       - name: Publish CLI package
         run: bun publish --access public

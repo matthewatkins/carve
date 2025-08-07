@@ -1,5 +1,11 @@
 # create-carve-app
 
+## 0.1.10
+
+### Patch Changes
+
+- updating readme and changing package name
+
 ## 0.1.1
 
 ### Patch Changes

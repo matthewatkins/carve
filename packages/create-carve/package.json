@@ -1,11 +1,11 @@
 {
   "name": "create-carve-app",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "CLI tool for creating new Carve projects",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "create-carve": "dist/index.js"
+    "create-carve-app": "dist/index.js"
   },
   "files": [
     "dist"
