@@ -14,7 +14,9 @@ const { title, description } = Astro.props as Props;
 const titleComposition = title
 	? `${title} - ${SITE_CONFIG.siteDescription}`
 	: `${SITE_CONFIG.siteName} - ${SITE_CONFIG.siteDescription}`;
-const descriptionComposition = description ? description : SITE_CONFIG.siteDescriptionLong;
+const descriptionComposition = description
+	? description
+	: SITE_CONFIG.siteDescriptionLong;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
 const ogDefaultImage = SITE_CONFIG.siteOgImage;
 const twDefaultImage = SITE_CONFIG.siteTwitterCardImage;
