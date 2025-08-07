@@ -1,0 +1,76 @@
+---
+import { SEO } from "astro-seo";
+import ThemeInit from "../features/themes/theme-init.astro";
+import { SITE_CONFIG } from "../site.config.ts";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title, description } = Astro.props as Props;
+
+const titleComposition = title
+	? `${title} - ${SITE_CONFIG.siteDescription}`
+	: `${SITE_CONFIG.siteName} - ${SITE_CONFIG.siteDescription}`;
+const descriptionComposition = description ? description : SITE_CONFIG.siteDescriptionLong;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
+const ogDefaultImage = SITE_CONFIG.siteOgImage;
+const twDefaultImage = SITE_CONFIG.siteTwitterCardImage;
+---
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/favicons/favicon.svg" />
+  <link rel="icon" sizes="16x16" href="/favicons/favicon-16x16.png" type="image/png" />
+  <link rel="alternate icon" sizes="32x32" href="/favicons/favicon-32x32.png" type="image/png" />
+  <link rel="icon" sizes="96x96" href="/favicons/favicon-96x96.png" type="image/png" />
+  <link rel="icon" sizes="192x192" href="/favicons/favicon-192x192.png" type="image/png" />
+  <link rel="icon" sizes="512x512" href="/favicons/favicon-512x512.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="57x57" href="/favicons/favicon-57x57.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicons/favicon-60x60.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicons/favicon-72x72.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicons/favicon-114x114.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicons/favicon-120x120.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicons/favicon-144x144.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicons/favicon-152x152.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/favicon-180x180.png" type="image/png" />
+  <link rel="manifest" href="/favicons/manifest.json" />
+  <meta name="theme-color" content="#292929" />
+  <meta name="msapplication-TileColor" content="#292929" />
+  <meta name="msapplication-TileImage" content="/favicons/favicon-512x512.png" />
+
+  <meta name="generator" content={Astro.generator} />
+
+  <SEO
+    title={titleComposition}
+    description={descriptionComposition}
+    canonical={canonicalURL}
+    openGraph={{
+      basic: {
+        url: canonicalURL,
+        type: "website",
+        title: titleComposition,
+        image: ogDefaultImage,
+      },
+      optional: {
+        description: descriptionComposition,
+      },
+    }},
+    twitter={{
+      card: 'summary_large_image',
+      site: '@matthewatkins',
+      creator: '@matthewatkins',
+      title: titleComposition,
+      description: descriptionComposition,
+      image: twDefaultImage,
+      imageAlt: "atkins.codes twitter card image",
+    }}
+  />
+
+  <!-- Theme initialization script -->
+  <ThemeInit />
+</head>

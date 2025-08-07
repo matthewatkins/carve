@@ -1,0 +1,21 @@
+<script is:inline>
+	(function() {
+		let preference;
+		try {
+			preference = localStorage.getItem('theme') || 'dark';
+		} catch {
+			preference = 'dark';
+		}
+
+		const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const effectiveTheme = preference === 'system'
+			? (systemDark ? 'dark' : 'light')
+			: preference;
+
+		if (effectiveTheme === 'dark') {
+			document.documentElement.classList.add('dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+		}
+	})();
+</script>

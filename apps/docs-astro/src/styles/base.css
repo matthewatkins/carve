@@ -1,0 +1,9 @@
+html {
+	interpolate-size: allow-keywords; /* Allow keywords in size properties - can animate height 0 to height auto */
+}
+
+html,
+body {
+	height: 100%;
+	font-family: var(--font-sans);
+}

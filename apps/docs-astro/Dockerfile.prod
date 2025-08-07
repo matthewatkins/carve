@@ -1,0 +1,37 @@
+# Build stage
+FROM oven/bun:canary as builder
+
+WORKDIR /app
+
+# Copy only the files needed for this Astro app
+COPY ./package.json ./package.json
+COPY ./src ./src
+COPY ./public ./public
+COPY ./astro.config.ts ./astro.config.ts
+COPY ./tsconfig.json ./tsconfig.json
+
+# Install dependencies and build the application
+RUN bun install && \
+    bunx --bun astro build
+
+# Production stage
+FROM oven/bun:canary
+
+WORKDIR /app
+
+# Copy the built files and server
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./
+COPY ./server.ts ./
+
+# Install only production dependencies
+RUN bun install --production && \
+    bun add hono @hono/node-server
+
+EXPOSE 4321
+
+ENV HOST=0.0.0.0
+ENV PORT=4321
+
+# Start the custom server
+CMD ["bun", "run", "server.ts"]

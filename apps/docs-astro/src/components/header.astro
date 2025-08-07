@@ -1,0 +1,17 @@
+---
+import SocialButtons from "../features/social/social-buttons.astro";
+import ThemeToggle from "../features/themes/theme-toggle.astro";
+---
+
+<header class="header flex flex-col sm:grid sm:grid-cols-[repeat(2,1fr)] sm:items-center md:grid-cols-[repeat(3,1fr)] p-[30px]">
+
+	<div class="eyebrow col-[2_/_span_1] md:col-[3_/_span_1] flex flex-col justify-start items-center sm:self-start gap-4">
+		<div class="button-row flex flex-row justify-center sm:justify-end items-center gap-4 w-full">
+			<SocialButtons />
+
+			<div class="theme-changer-container">
+				<ThemeToggle />
+			</div>
+		</div>
+	</div>
+</header>

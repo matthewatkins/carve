@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://carve.atkins.codes/sitemap-index.xml

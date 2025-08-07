@@ -1,0 +1,7 @@
+/* dark mode overrides */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* transition for theme mode */
+html {
+	transition: background-color 0.2s linear, color 0.2s linear;
+}

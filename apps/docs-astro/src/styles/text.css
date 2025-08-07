@@ -1,0 +1,94 @@
+@layer base {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--font-sans);
+		color: var(--color-brand-dark);
+		@apply font-bold;
+
+		&:not(.front-page) {
+			text-transform: uppercase;
+		}
+
+		@variant dark {
+			color: var(--color-brand-light);
+		}
+	}
+
+	h1 {
+		color: var(--color-brand-dark);
+		font-size: 2rem;
+
+		@variant dark {
+			color: var(--color-brand-primary);
+		}
+	}
+
+	h2 {
+		font-size: 1.8rem;
+	}
+	h3 {
+		font-size: 1.6rem;
+	}
+	h4 {
+		font-size: 1.4rem;
+	}
+	h5 {
+		font-size: 1.2rem;
+	}
+	h6 {
+		font-size: 1.1rem;
+	}
+
+	p {
+		margin-bottom: 1.5rem;
+		font-family: var(--font-sans);
+		font-size: var(--text-lg);
+		color: var(--color-brand-dark);
+
+		@variant dark {
+			color: var(--color-brand-light);
+		}
+
+		& a {
+			color: var(--color-brand-dark);
+			text-decoration: 0.2em underline transparent;
+			transition: text-decoration 0.1s ease;
+
+			&:hover {
+				text-decoration: 0.2em underline currentColor;
+			}
+
+			@variant dark {
+				color: var(--color-brand-primary);
+			}
+		}
+	}
+
+	a {
+		color: var(--color-brand-dark);
+		text-decoration: 0.2em underline transparent;
+		transition: text-decoration 0.1s ease;
+
+		&:hover {
+			text-decoration: 0.2em underline currentColor;
+		}
+
+		@variant dark {
+			color: var(--color-brand-light);
+		}
+	}
+
+	::selection {
+		background: var(--color-brand-primary);
+		@apply text-gray-950;
+	}
+
+	::-moz-selection {
+		background: var(--color-brand-primary);
+		@apply text-gray-950;
+	}
+}

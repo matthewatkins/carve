@@ -1,0 +1,25 @@
+@theme {
+	--font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
+	--font-sans--font-feature-settings: "frac", "tnum", "zero", "salt", "cv01", "cv02", "cv03", "cv04", "cv05", "cv06",
+		"cv09", "cv10";
+
+	--font-alternate: "Blackhawk", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@font-face {
+	font-family: "Inter";
+	src: url("/fonts/inter/Inter.var.woff2") format("woff2-variations");
+	font-weight: 100 900;
+	display: swap;
+	preload: true;
+}
+
+@font-face {
+	font-family: "Blackhawk";
+	src: url("/fonts/blackhawk/blackhawk.woff2") format("woff2");
+	font-weight: 400;
+	display: swap;
+	preload: true;
+}

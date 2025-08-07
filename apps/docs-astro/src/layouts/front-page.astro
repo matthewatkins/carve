@@ -1,0 +1,21 @@
+---
+import Footer from "../components/footer.astro";
+import GlobalHead from "../components/global-head.astro";
+import GlobalScripts from "../components/global-scripts.astro";
+import Header from "../components/header.astro";
+---
+
+<html lang="en" class="bg-brand-light dark:bg-brand-dark text-dark dark:text-light dark">
+	<GlobalHead title="Carve" />
+	<body class='h-full m-0'>
+		<div
+			class="grid grid-cols-1 grid-rows-[max-content_1fr_max-content] items-center relative min-h-dvh border-8 border-brand-alternate/45 dark:border-brand-alternate">
+			<Header />
+			<main class="w-full self-start sm:self-center">
+				<slot />
+			</main>
+			<Footer />
+		</div>
+		<GlobalScripts />
+	</body>
+</html>

@@ -1,0 +1,18 @@
+---
+import { networks } from "./networks";
+
+const visibleNetworks = networks.filter(
+	(network) => network.isVisible === true,
+);
+---
+
+<ul class="flex flex-row gap-4 justify-center items-center w-auto list-none">
+	{visibleNetworks.map((network) => (
+		<li>
+			<a href={network.link} target="_blank" rel="noopener noreferrer" class="transition-all duration-200 ease-in-out hover:opacity-40" data-umami-event={`click-${network.name}`}>
+				{/* @ts-expect-error - Icon is not a valid component, need to fix this */}
+				<network.icon />
+			</a>
+		</li>
+	))}
+</ul>

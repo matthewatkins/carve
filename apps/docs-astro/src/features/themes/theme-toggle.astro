@@ -1,0 +1,69 @@
+---
+import IconMoon from "./icons/moon.svg?raw";
+import IconSun from "./icons/sun.svg?raw";
+import IconSystem from "./icons/system.svg?raw";
+
+const icons = {
+	system: IconSystem,
+	light: IconSun,
+	dark: IconMoon,
+} as const;
+---
+
+<script>
+	import { getStoredTheme, setStoredTheme, getEffectiveTheme } from './utils';
+	import { getDataAttribute } from '../../lib/utils/getDataAttribute';
+	import type { Theme } from './types';
+
+	const button = document.getElementById('theme-toggle')!;
+	const icon = document.getElementById('theme-icon')!;
+
+
+	const icons: Record<Theme, string> = getDataAttribute(button, 'icons');
+
+	const updateIcon = (theme: Theme) => icon.innerHTML = icons[theme];
+
+	const updateTheme = (newTheme: Theme) => {
+		const effective = getEffectiveTheme(newTheme);
+		document.documentElement.classList.toggle('dark', effective === 'dark');
+		updateIcon(newTheme);
+		setStoredTheme(newTheme);
+	}
+
+	// initialize
+	const currentTheme = getStoredTheme();
+	updateIcon(currentTheme);
+
+	// handle clicks
+	button.addEventListener('click', () => {
+		const current = getStoredTheme();
+		const nextTheme: Theme =
+			current === 'system' ? 'light' :
+			current === 'light' ? 'dark' : 'system';
+
+		updateTheme(nextTheme);
+	});
+
+	// handle system theme changes
+	if (window.matchMedia) {
+		window.matchMedia('(prefers-color-scheme: dark)')
+			.addEventListener('change', (e) => {
+				const currentTheme = getStoredTheme();
+				if (currentTheme === 'system') {
+					document.documentElement.classList.toggle('dark', e.matches);
+				}
+			});
+	}
+</script>
+
+<button
+	id="theme-toggle"
+	type="button"
+	class="rounded-lg h-[50px] w-auto p-2.5 border-4 border-transparent hover:border-brand-primary dark:hover:border-brand-alternate bg-transparent focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 cursor-pointer"
+	aria-label="Toggle theme"
+	data-icons={JSON.stringify(icons)}
+	data-umami-event="click-theme-toggle"
+>
+	<span class="sr-only">Toggle theme</span>
+	<span id="theme-icon" class="text-lg" set:html={icons.dark}></span>
+</button>

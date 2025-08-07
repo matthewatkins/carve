@@ -1,0 +1,15 @@
+@layer theme, starlight, base, prose, components, utilities;
+
+/* Tailwind's theme and base */
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+
+/* Our base-level customizations */
+@import "./theme.css";
+@import "./base.css";
+@import "./fonts.css";
+@import "./color-mode.css";
+@import "./text.css";
+
+/* Tailwind utilities always last */
+@import "tailwindcss/utilities.css" layer(utilities);
