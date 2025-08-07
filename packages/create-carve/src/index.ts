@@ -3,58 +3,75 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineCommand, runMain } from "citty";
 import { create } from "./commands/create.js";
 import { init } from "./commands/init.js";
 
-// Read version from package.json
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageJson = JSON.parse(
 	readFileSync(join(__dirname, "../package.json"), "utf-8"),
 );
 
-const main = defineCommand({
-	meta: {
-		name: "create-carve-app",
-		version: packageJson.version,
-		description: "CLI tool for creating new Carve projects",
-	},
-	args: {
-		// Accept project name as first argument when no subcommand
-		name: {
-			type: "positional",
-			description: "Project name (defaults to create command)",
-			required: false,
-		},
-	},
-	subCommands: {
-		create,
-		init,
-	},
-	// Default behavior - run create command
-	async run(ctx) {
-		// If a project name is provided as first arg, treat it as create command
-		if (ctx.args.name && create?.run) {
-			return create.run({
-				args: { name: ctx.args.name, _: [] },
-				cmd: create,
-				rawArgs: ctx.rawArgs,
-			});
+function showHelp() {
+	console.log(
+		`CLI tool for creating new Carve projects (create-carve-app v${packageJson.version})`,
+	);
+	console.log("\nUsage:");
+	console.log(
+		"  create-carve-app <project-name>           # Create new project",
+	);
+	console.log(
+		"  create-carve-app create <project-name>    # Explicit create command",
+	);
+	console.log(
+		"  create-carve-app init [project-name]      # Initialize existing project",
+	);
+	console.log("  bun create carve-app <project-name>       # Via bun create");
+	console.log("\nExamples:");
+	console.log("  create-carve-app my-app");
+	console.log("  bun create carve-app my-app");
+	console.log("  create-carve-app init my-existing-project");
+}
+
+async function main() {
+	const args = process.argv.slice(2);
+	const [command, projectName] = args;
+
+	// Handle help and version
+	if (!command || command === "--help" || command === "-h") {
+		showHelp();
+		return;
+	}
+
+	if (command === "--version" || command === "-v") {
+		console.log(packageJson.version);
+		return;
+	}
+
+	// Create mock context for commands (to match existing command structure)
+	const createMockContext = (name: string) => ({
+		args: { name, _: [] },
+		cmd: { meta: { name: command } },
+		rawArgs: args,
+	});
+
+	try {
+		// Handle explicit commands
+		if (command === "create" && create?.run) {
+			await create.run(createMockContext(projectName));
+		} else if (command === "init" && init?.run) {
+			await init.run(createMockContext(projectName));
+		} else if (create?.run) {
+			// Default to create command
+			await create.run(createMockContext(command));
+		} else {
+			console.error("Error: Commands not available");
+			process.exit(1);
 		}
+	} catch (error) {
+		console.error("Error:", error);
+		process.exit(1);
+	}
+}
 
-		// Otherwise show help
-		console.log("CLI tool for creating new Carve projects");
-		console.log("\nAvailable commands:");
-		console.log("  create <name>  Create a new Carve project");
-		console.log("  init [name]    Initialize existing project");
-		console.log("\nUsage:");
-		console.log("  create-carve-app create my-app");
-		console.log("  create-carve-app my-app          # same as above");
-		console.log(
-			"  bun create carve-app my-app      # when used with bun create",
-		);
-	},
-});
-
-runMain(main);
+main();

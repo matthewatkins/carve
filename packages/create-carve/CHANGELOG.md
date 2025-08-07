@@ -1,5 +1,11 @@
 # create-carve-app
 
+## 0.2.1
+
+### Patch Changes
+
+- Updating CLI commands to be cleaner and not rely on citty
+
 ## 0.2.0
 
 ### Minor Changes
