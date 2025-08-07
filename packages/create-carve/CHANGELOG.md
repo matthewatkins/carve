@@ -1,5 +1,11 @@
 # create-carve-app
 
+## 0.2.0
+
+### Minor Changes
+
+- fixing default cli run command
+
 ## 0.1.10
 
 ### Patch Changes
