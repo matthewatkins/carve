@@ -16,7 +16,7 @@ const packageJson = JSON.parse(
 
 const main = defineCommand({
 	meta: {
-		name: "create-carve",
+		name: "create-carve-app",
 		version: packageJson.version,
 		description: "CLI tool for creating new Carve projects",
 	},

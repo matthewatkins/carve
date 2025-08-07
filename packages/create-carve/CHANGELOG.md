@@ -1,4 +1,4 @@
-# @matthew.atkins/create-carve
+# create-carve-app
 
 ## 0.1.1
 

@@ -1,6 +1,6 @@
 {
-  "name": "@matthew.atkins/create-carve",
-  "version": "0.1.8",
+  "name": "create-carve-app",
+  "version": "0.1.9",
   "description": "CLI tool for creating new Carve projects",
   "type": "module",
   "main": "dist/index.js",
