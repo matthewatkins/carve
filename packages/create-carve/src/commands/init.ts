@@ -1,4 +1,11 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
@@ -251,18 +258,54 @@ export const init = defineCommand({
 
 		// Remove lock files
 		s.start("Cleaning up lock files...");
-		const lockFiles = ["bun.lock", "package-lock.json", "yarn.lock"];
+		const lockFiles = [
+			"bun.lock",
+			"pnpm-lock.yaml",
+			"yarn.lock",
+			"package-lock.json",
+		];
 		for (const lockFile of lockFiles) {
 			if (existsSync(lockFile)) {
 				try {
-					await execa("rm", [lockFile]);
-					consola.warn(`Removed ${lockFile} - run 'bun install' to regenerate`);
+					rmSync(lockFile);
 				} catch (error) {
 					consola.warn(`Failed to remove ${lockFile}:`, error);
 				}
 			}
 		}
 		s.stop("Lock files cleaned up");
+
+		// Remove packageManager field from root package.json
+		if (existsSync("package.json")) {
+			try {
+				const pkgPath = "package.json";
+				const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+				delete pkg.packageManager;
+				writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+			} catch (error) {
+				consola.warn("Failed to clean package.json:", error);
+			}
+		}
+
+		// Detect available package manager
+		const isAvailable = (cmd: string) => {
+			try {
+				execSync(`${cmd} --version`, { stdio: "ignore" });
+				return true;
+			} catch {
+				return false;
+			}
+		};
+
+		const detectPackageManager = () => {
+			if (isAvailable("pnpm")) return "pnpm";
+			if (isAvailable("yarn")) return "yarn";
+			if (isAvailable("bun")) return "bun";
+			return "npm";
+		};
+
+		const packageManager = detectPackageManager();
+		const runScript = (script: string) => `${packageManager} run ${script}`;
 
 		consola.success("Project initialization complete!");
 
@@ -273,9 +316,9 @@ export const init = defineCommand({
 		})) as boolean;
 
 		if (installDeps) {
-			s.start("Installing dependencies...");
+			s.start(`Installing dependencies with ${packageManager}...`);
 			try {
-				await execa("bun", ["install"], { stdio: "inherit" });
+				await execa(packageManager, ["install"], { stdio: "inherit" });
 				s.stop("Dependencies installed successfully");
 
 				// Ask if user wants to set up database
@@ -334,8 +377,12 @@ export const init = defineCommand({
 						// Push schemas
 						s.start("Setting up database schemas...");
 						try {
-							await execa("bun", ["run", "db:push:auth"], { stdio: "inherit" });
-							await execa("bun", ["run", "db:push:api"], { stdio: "inherit" });
+							await execa(packageManager, ["run", "db:push:auth"], {
+								stdio: "inherit",
+							});
+							await execa(packageManager, ["run", "db:push:api"], {
+								stdio: "inherit",
+							});
 							s.stop("Database schemas set up successfully");
 
 							consola.success("🎉 Setup Complete!");
@@ -345,7 +392,7 @@ Your project has been fully initialized and set up!
 
 Next steps:
 1. Set up your environment variables (see README.md)
-2. Start development: bun dev
+2. Start development: ${runScript("dev")}
 
 Service URLs:
 - Web App: http://localhost:3000
@@ -358,7 +405,9 @@ Service URLs:
 							s.stop("Failed to set up database schemas");
 							consola.warn("You may need to check your environment variables");
 							consola.info(
-								"You can try manually: bun run db:push:auth && bun run db:push:api",
+								`You can try manually: ${runScript("db:push:auth")} && ${runScript(
+									"db:push:api",
+								)}`,
 							);
 						}
 					} catch (_error) {
@@ -376,8 +425,8 @@ Service URLs:
 Next steps:
 1. Set up your environment variables (see README.md)
 2. Start database: docker-compose up --build -d
-3. Push database schemas: bun run db:push:auth && bun run db:push:api
-4. Start development: bun dev
+3. Push database schemas: ${runScript("db:push:auth")} && ${runScript("db:push:api")}
+4. Start development: ${runScript("dev")}
            `,
 						"Next Steps",
 					);
@@ -443,11 +492,11 @@ AUTH_SERVER_URL=http://localhost:3001`;
 			note(
 				`
 Next steps:
-1. Run 'bun install' to install dependencies
+1. Run '${packageManager} install' to install dependencies
 2. Set up your environment variables (see README.md)
 3. Start database: docker-compose up --build -d
-4. Push database schemas: bun run db:push:auth && bun run db:push:api
-5. Start development: bun dev
+4. Push database schemas: ${runScript("db:push:auth")} && ${runScript("db:push:api")}
+5. Start development: ${runScript("dev")}
 6. Update any remaining references manually if needed
        `,
 				"Next Steps",
