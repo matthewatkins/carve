@@ -7,11 +7,11 @@ The CLI for Carve, a modern TypeScript stack with microservices architecture, co
 ### Create a New Project
 
 ```bash
-# Create a new Carve project with bun, pnpm, or npm
-bun create carve-app@latest
+# Create a new Carve project with npx (works with npm, pnpm, yarn, or bun)
+npx create-carve-app@latest
 
 # Or with a specific name
-bun create carve-app@latest my-carve-project
+npx create-carve-app@latest my-carve-project
 ```
 
 The CLI will:
@@ -23,14 +23,15 @@ The CLI will:
 - Provide clear next steps
 
 
-- `bun dev` - Start all services
-- `bun run dev:web` - Start web app only
-- `bun run dev:auth` - Start auth server only
-- `bun run dev:api` - Start API server only
-- `bun run db:push:auth` - Push auth schema
-- `bun run db:push:api` - Push API schema
-- `bun run db:studio:auth` - Open auth database studio
-- `bun run db:studio:api` - Open API database studio
+Replace `<pm>` with your package manager (npm, pnpm, yarn, or bun)
+- `<pm> run dev` - Start all services
+- `<pm> run dev:web` - Start web app only
+- `<pm> run dev:auth` - Start auth server only
+- `<pm> run dev:api` - Start API server only
+- `<pm> run db:push:auth` - Push auth schema
+- `<pm> run db:push:api` - Push API schema
+- `<pm> run db:studio:auth` - Open auth database studio
+- `<pm> run db:studio:api` - Open API database studio
 
 ## License
 

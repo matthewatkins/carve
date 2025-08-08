@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import {
 	existsSync,
 	mkdirSync,
@@ -256,13 +257,54 @@ export const create = defineCommand({
 			consola.warn("You may need to update references manually");
 		}
 
-		// Detect package manager
+		// Remove lock files to allow any package manager
+		const lockFiles = [
+			"bun.lock",
+			"pnpm-lock.yaml",
+			"yarn.lock",
+			"package-lock.json",
+		];
+		for (const lockFile of lockFiles) {
+			if (existsSync(lockFile)) {
+				try {
+					rmSync(lockFile);
+				} catch (error) {
+					consola.warn(`Failed to remove ${lockFile}:`, error);
+				}
+			}
+		}
+
+		// Remove packageManager field from root package.json
+		if (existsSync("package.json")) {
+			try {
+				const pkgPath = "package.json";
+				const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+				delete pkg.packageManager;
+				writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+			} catch (error) {
+				consola.warn("Failed to clean package.json:", error);
+			}
+		}
+
+		// Detect available package manager
+		const isAvailable = (cmd: string) => {
+			try {
+				execSync(`${cmd} --version`, { stdio: "ignore" });
+				return true;
+			} catch {
+				return false;
+			}
+		};
+
 		const detectPackageManager = () => {
-			if (existsSync("bun.lock")) return "bun";
-			if (existsSync("pnpm-lock.yaml")) return "pnpm";
-			if (existsSync("yarn.lock")) return "yarn";
-			if (existsSync("package-lock.json")) return "npm";
-			return "bun"; // Default to bun
+			if (existsSync("bun.lock") && isAvailable("bun")) return "bun";
+			if (existsSync("pnpm-lock.yaml") && isAvailable("pnpm")) return "pnpm";
+			if (existsSync("yarn.lock") && isAvailable("yarn")) return "yarn";
+			if (existsSync("package-lock.json") && isAvailable("npm")) return "npm";
+			if (isAvailable("pnpm")) return "pnpm";
+			if (isAvailable("yarn")) return "yarn";
+			if (isAvailable("bun")) return "bun";
+			return "npm";
 		};
 
 		// Ask if user wants to install dependencies
@@ -452,20 +494,13 @@ AUTH_SERVER_URL=http://localhost:3001`;
 		outro("🎉 Project created successfully!");
 
 		const packageManager = detectPackageManager();
-		const runCommand =
-			packageManager === "bun"
-				? "bun"
-				: packageManager === "pnpm"
-					? "pnpm"
-					: packageManager === "yarn"
-						? "yarn"
-						: "npm";
+		const runScript = (script: string) => `${packageManager} run ${script}`;
 
 		note(
 			`
 Next steps:
 1. cd ${projectName}
-2. ${runCommand} dev
+2. ${runScript("dev")}
 
 Service URLs:
 - Web App: http://localhost:3000
@@ -473,10 +508,10 @@ Service URLs:
 - API Server: http://localhost:3002
 
 Development Commands:
-- ${runCommand} dev          # Start all services
-- ${runCommand} run dev:web  # Start web app only
-- ${runCommand} run dev:auth # Start auth server only
-- ${runCommand} run dev:api  # Start API server only
+- ${runScript("dev")}          # Start all services
+- ${runScript("dev:web")}      # Start web app only
+- ${runScript("dev:auth")}     # Start auth server only
+- ${runScript("dev:api")}      # Start API server only
      `,
 			"Next Steps",
 		);
