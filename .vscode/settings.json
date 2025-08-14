@@ -27,7 +27,7 @@
     ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "workbench.colorCustomizations": {
-    "sash.hoverBorder": "#0d9488",
+    "sash.hoverBorder": "#E49C03",
     "statusBar.background": "#3D423D",
     "statusBar.foreground": "#E8E8E8",
     "statusBarItem.hoverBackground": "#3D423D",
