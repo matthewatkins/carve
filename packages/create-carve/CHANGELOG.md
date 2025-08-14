@@ -1,5 +1,24 @@
 # create-carve-app
 
+## 0.4.0
+
+### Minor Changes
+
+- fix: resolve ESM import resolution issue by adding explicit .js extensions
+
+  - Added explicit .js extensions to import statements in create.ts and init.ts
+  - Ensures proper ESM module resolution when package is published to npm
+  - Fixes ERR_MODULE_NOT_FOUND error when using bun create carve-app@latest
+  - Maintains compatibility with both Node.js and Bun environments
+
+### Patch Changes
+
+- 485d017: fix: resolve ESM module resolution issue in published npm package
+
+  - Changed TypeScript moduleResolution from "bundler" to "node" for proper ESM compatibility
+  - Fixed import path resolution that was causing ERR_MODULE_NOT_FOUND errors
+  - Ensures CLI works correctly when published to npmjs.org
+
 ## 0.3.1
 
 ### Patch Changes

@@ -4,7 +4,7 @@ import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
 import { consola } from "consola";
 import { execa } from "execa";
-import { updateAllProjectReferences } from "../shared/rename-utils";
+import { updateAllProjectReferences } from "../shared/rename-utils.js";
 
 export const init = defineCommand({
 	meta: {

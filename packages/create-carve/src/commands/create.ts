@@ -5,7 +5,7 @@ import { defineCommand } from "citty";
 import { consola } from "consola";
 import { execa } from "execa";
 import { downloadTemplate } from "giget";
-import { updateAllProjectReferences } from "../shared/rename-utils";
+import { updateAllProjectReferences } from "../shared/rename-utils.js";
 
 export const create = defineCommand({
 	meta: {
