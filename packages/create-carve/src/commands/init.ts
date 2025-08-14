@@ -102,7 +102,7 @@ export const init = defineCommand({
 			"packages/shared-utils/package.json",
 			"docker-compose.yml",
 			"README.md",
-			"scripts/predev.sh",
+			"scripts/dev.sh",
 		];
 
 		// Update package.json files
@@ -234,14 +234,24 @@ export const init = defineCommand({
 
 		// Update scripts
 		s.start("Updating scripts...");
-		if (existsSync("scripts/predev.sh")) {
+		if (existsSync("scripts/dev.sh")) {
 			try {
-				let content = readFileSync("scripts/predev.sh", "utf-8");
+				let content = readFileSync("scripts/dev.sh", "utf-8");
+				// Replace scope references (e.g., @carve/ -> @new-name/)
 				content = content.replace(
 					new RegExp(`@${oldName}/`, "g"),
 					`@${newName}/`,
 				);
-				writeFileSync("scripts/predev.sh", content);
+				// Replace full package references (e.g., @carve/shared-types -> @new-name/shared-types)
+				content = content.replace(
+					new RegExp(`@${oldName}/shared-types`, "g"),
+					`@${newName}/shared-types`,
+				);
+				content = content.replace(
+					new RegExp(`@${oldName}/shared-utils`, "g"),
+					`@${newName}/shared-utils`,
+				);
+				writeFileSync("scripts/dev.sh", content);
 				s.stop("Scripts updated");
 			} catch (error) {
 				s.stop("Failed to update scripts");
