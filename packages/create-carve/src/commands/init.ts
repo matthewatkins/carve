@@ -1,10 +1,10 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
 import { consola } from "consola";
 import { execa } from "execa";
-import { glob } from "glob";
+import { updateAllProjectReferences } from "../shared/rename-utils";
 
 export const init = defineCommand({
 	meta: {
@@ -91,163 +91,10 @@ export const init = defineCommand({
 		const oldName = "carve";
 		const newName = projectName;
 
-		// Files to process
-		const filesToProcess = [
-			"package.json",
-			"apps/api-server/package.json",
-			"apps/auth-server/package.json",
-			"apps/web/package.json",
-			"packages/api/package.json",
-			"packages/shared-types/package.json",
-			"packages/shared-utils/package.json",
-			"docker-compose.yml",
-			"README.md",
-			"scripts/predev.sh",
-		];
-
-		// Update package.json files
-		s.start("Updating package.json files...");
-		for (const file of filesToProcess) {
-			if (existsSync(file)) {
-				try {
-					let content = readFileSync(file, "utf-8");
-
-					// Replace package names
-					content = content.replace(
-						new RegExp(`"@${oldName}/`, "g"),
-						`"@${newName}/`,
-					);
-					content = content.replace(
-						new RegExp(`"name": "${oldName}"`, "g"),
-						`"name": "${newName}"`,
-					);
-					content = content.replace(
-						new RegExp(`"name": "@${oldName}/`, "g"),
-						`"name": "@${newName}/`,
-					);
-
-					writeFileSync(file, content);
-					consola.success(`Updated ${file}`);
-				} catch (error) {
-					consola.warn(`Failed to update ${file}:`, error);
-				}
-			}
-		}
-		s.stop("Package.json files updated");
-
-		// Update turbo filter commands in root package.json
-		s.start("Updating turbo filter commands...");
-		if (existsSync("package.json")) {
-			try {
-				let content = readFileSync("package.json", "utf-8");
-				content = content.replace(
-					new RegExp(`turbo -F @${oldName}/`, "g"),
-					`turbo -F @${newName}/`,
-				);
-				writeFileSync("package.json", content);
-				s.stop("Turbo filter commands updated");
-			} catch (error) {
-				s.stop("Failed to update turbo filter commands");
-				consola.warn("Failed to update turbo filter commands:", error);
-			}
-		}
-
-		// Update import statements in TypeScript/JavaScript files
-		s.start("Updating import statements...");
-		const importPatterns = [
-			"apps/api-server/src",
-			"apps/auth-server/src",
-			"apps/web/app",
-			"packages/api/src",
-			"packages/shared-types/src",
-			"packages/shared-utils/src",
-		];
-
-		for (const pattern of importPatterns) {
-			if (existsSync(pattern)) {
-				try {
-					const files = await glob(`${pattern}/**/*.{ts,js,vue}`);
-					for (const file of files) {
-						try {
-							let content = readFileSync(file, "utf-8");
-							content = content.replace(
-								new RegExp(`@${oldName}/`, "g"),
-								`@${newName}/`,
-							);
-							writeFileSync(file, content);
-						} catch (error) {
-							consola.warn(`Failed to update ${file}:`, error);
-						}
-					}
-				} catch (error) {
-					consola.warn(`Failed to process pattern ${pattern}:`, error);
-				}
-			}
-		}
-		s.stop("Import statements updated");
-
-		// Update Docker configuration
-		s.start("Updating Docker configuration...");
-		if (existsSync("docker-compose.yml")) {
-			try {
-				let content = readFileSync("docker-compose.yml", "utf-8");
-				content = content.replace(
-					new RegExp(`name: '${oldName}'`, "g"),
-					`name: '${newName}'`,
-				);
-				content = content.replace(
-					new RegExp(`container_name: ${oldName}_postgres`, "g"),
-					`container_name: ${newName}_postgres`,
-				);
-				writeFileSync("docker-compose.yml", content);
-				s.stop("Docker configuration updated");
-			} catch (error) {
-				s.stop("Failed to update Docker configuration");
-				consola.warn("Failed to update Docker configuration:", error);
-			}
-		}
-
-		// Update README.md
-		s.start("Updating README.md...");
-		if (existsSync("README.md")) {
-			try {
-				let content = readFileSync("README.md", "utf-8");
-				content = content.replace(
-					new RegExp(`# ${oldName} - Microservices Architecture`, "g"),
-					`# ${newName} - Microservices Architecture`,
-				);
-				content = content.replace(
-					new RegExp(`docker logs ${oldName}-postgres`, "g"),
-					`docker logs ${newName}-postgres`,
-				);
-				content = content.replace(
-					new RegExp(`${oldName}/`, "g"),
-					`${newName}/`,
-				);
-				writeFileSync("README.md", content);
-				s.stop("README.md updated");
-			} catch (error) {
-				s.stop("Failed to update README.md");
-				consola.warn("Failed to update README.md:", error);
-			}
-		}
-
-		// Update scripts
-		s.start("Updating scripts...");
-		if (existsSync("scripts/predev.sh")) {
-			try {
-				let content = readFileSync("scripts/predev.sh", "utf-8");
-				content = content.replace(
-					new RegExp(`@${oldName}/`, "g"),
-					`@${newName}/`,
-				);
-				writeFileSync("scripts/predev.sh", content);
-				s.stop("Scripts updated");
-			} catch (error) {
-				s.stop("Failed to update scripts");
-				consola.warn("Failed to update scripts:", error);
-			}
-		}
+		// Update all project references using shared utilities
+		s.start("Updating project references...");
+		await updateAllProjectReferences(oldName, newName);
+		s.stop("Project references updated");
 
 		// Remove lock files
 		s.start("Cleaning up lock files...");
@@ -454,6 +301,6 @@ Next steps:
 			);
 		}
 
-		outro("🎉 Project initialization complete!");
+		outro("🔪 Carve project initialized!");
 	},
 });

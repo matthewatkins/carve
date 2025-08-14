@@ -1,5 +1,11 @@
 # create-carve-app
 
+## 0.3.0
+
+### Minor Changes
+
+- Refactored commands with shared rename utils for simplification
+
 ## 0.2.1
 
 ### Patch Changes

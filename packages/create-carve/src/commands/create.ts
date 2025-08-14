@@ -1,17 +1,11 @@
-import {
-	existsSync,
-	mkdirSync,
-	readFileSync,
-	rmSync,
-	writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { confirm, intro, note, outro, spinner, text } from "@clack/prompts";
 import { defineCommand } from "citty";
 import { consola } from "consola";
 import { execa } from "execa";
 import { downloadTemplate } from "giget";
-import { glob } from "glob";
+import { updateAllProjectReferences } from "../shared/rename-utils";
 
 export const create = defineCommand({
 	meta: {
@@ -76,22 +70,11 @@ export const create = defineCommand({
 		s.start("Downloading Carve template...");
 
 		try {
-			// Detect if we're in development mode by checking if we're running from the monorepo
-			const isDevelopment =
-				process.env.NODE_ENV === "development" ||
-				process.env.CARVE_DEV === "true";
-
-			if (isDevelopment) {
-				// For development, copy the template directory directly
-				const templateDir = "/Users/atkins/code/projects/carve-template";
-				await execa("cp", ["-r", templateDir, targetDir]);
-			} else {
-				// For production, download from GitHub
-				await downloadTemplate("gh:matthewatkins/carve-template", {
-					dir: targetDir,
-					force: true,
-				});
-			}
+			// Download template from GitHub
+			await downloadTemplate("gh:matthewatkins/carve-template", {
+				dir: targetDir,
+				force: true,
+			});
 			s.stop("Template downloaded successfully");
 		} catch (error) {
 			s.stop("Failed to download template");
@@ -108,147 +91,9 @@ export const create = defineCommand({
 			const oldName = "carve";
 			const newName = projectName;
 
-			// Files to process
-			const filesToProcess = [
-				"package.json",
-				"apps/api-server/package.json",
-				"apps/auth-server/package.json",
-				"apps/web/package.json",
-				"packages/api/package.json",
-				"packages/shared-types/package.json",
-				"packages/shared-utils/package.json",
-				"docker-compose.yml",
-				"README.md",
-				"scripts/predev.sh",
-			];
+			// Update all project references using shared utilities
 
-			// Update package.json files
-			for (const file of filesToProcess) {
-				if (existsSync(file)) {
-					try {
-						let content = readFileSync(file, "utf-8");
-
-						// Replace package names
-						content = content.replace(
-							new RegExp(`"@${oldName}/`, "g"),
-							`"@${newName}/`,
-						);
-						content = content.replace(
-							new RegExp(`"name": "${oldName}"`, "g"),
-							`"name": "${newName}"`,
-						);
-						content = content.replace(
-							new RegExp(`"name": "@${oldName}/`, "g"),
-							`"name": "@${newName}/`,
-						);
-
-						writeFileSync(file, content);
-						consola.success(`Updated ${file}`);
-					} catch (error) {
-						consola.warn(`Failed to update ${file}:`, error);
-					}
-				}
-			}
-
-			// Update turbo filter commands in root package.json
-			if (existsSync("package.json")) {
-				try {
-					let content = readFileSync("package.json", "utf-8");
-					content = content.replace(
-						new RegExp(`turbo -F @${oldName}/`, "g"),
-						`turbo -F @${newName}/`,
-					);
-					writeFileSync("package.json", content);
-				} catch (error) {
-					consola.warn("Failed to update turbo filter commands:", error);
-				}
-			}
-
-			// Update import statements in TypeScript/JavaScript files
-			const importPatterns = [
-				"apps/api-server/src",
-				"apps/auth-server/src",
-				"apps/web/app",
-				"packages/api/src",
-				"packages/shared-types/src",
-				"packages/shared-utils/src",
-			];
-
-			for (const pattern of importPatterns) {
-				if (existsSync(pattern)) {
-					try {
-						const files = await glob(`${pattern}/**/*.{ts,js,vue}`);
-						for (const file of files) {
-							try {
-								let content = readFileSync(file, "utf-8");
-								content = content.replace(
-									new RegExp(`@${oldName}/`, "g"),
-									`@${newName}/`,
-								);
-								writeFileSync(file, content);
-							} catch (error) {
-								consola.warn(`Failed to update ${file}:`, error);
-							}
-						}
-					} catch (error) {
-						consola.warn(`Failed to process pattern ${pattern}:`, error);
-					}
-				}
-			}
-
-			// Update Docker configuration
-			if (existsSync("docker-compose.yml")) {
-				try {
-					let content = readFileSync("docker-compose.yml", "utf-8");
-					content = content.replace(
-						new RegExp(`name: '${oldName}'`, "g"),
-						`name: '${newName}'`,
-					);
-					content = content.replace(
-						new RegExp(`container_name: ${oldName}_postgres`, "g"),
-						`container_name: ${newName}_postgres`,
-					);
-					writeFileSync("docker-compose.yml", content);
-				} catch (error) {
-					consola.warn("Failed to update Docker configuration:", error);
-				}
-			}
-
-			// Update README.md
-			if (existsSync("README.md")) {
-				try {
-					let content = readFileSync("README.md", "utf-8");
-					content = content.replace(
-						new RegExp(`# ${oldName} - Microservices Architecture`, "g"),
-						`# ${newName} - Microservices Architecture`,
-					);
-					content = content.replace(
-						new RegExp(`docker logs ${oldName}-postgres`, "g"),
-						`docker logs ${newName}-postgres`,
-					);
-					content = content.replace(
-						new RegExp(`${oldName}/`, "g"),
-						`${newName}/`,
-					);
-					writeFileSync("README.md", content);
-				} catch (error) {
-					consola.warn("Failed to update README.md:", error);
-				}
-			}
-
-			// Update scripts
-			if (existsSync("scripts/predev.sh")) {
-				try {
-					let content = readFileSync("scripts/predev.sh", "utf-8");
-					content = content.replace(
-						new RegExp(`@${oldName}/`, "g"),
-						`@${newName}/`,
-					);
-					writeFileSync("scripts/predev.sh", content);
-				} catch (error) {
-					consola.warn("Failed to update scripts:", error);
-				}
-			}
+			await updateAllProjectReferences(oldName, newName);
 
 			s.stop("Project references updated successfully");
 		} catch (_error) {
