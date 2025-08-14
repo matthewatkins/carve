@@ -1,5 +1,11 @@
 # create-carve-app
 
+## 0.3.1
+
+### Patch Changes
+
+- fixed a file extension issue
+
 ## 0.3.0
 
 ### Minor Changes
